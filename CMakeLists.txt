@@ -3,4 +3,5 @@ project(AlgorithmsCPP)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(AlgorithmsCPP main.cpp Logic.h Logic.cpp)
+set(SOURCE_FILES main.cpp Logic.cpp)
+add_executable(AlgorithmsCPP ${SOURCE_FILES})
