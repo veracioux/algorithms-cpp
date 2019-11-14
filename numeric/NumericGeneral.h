@@ -5,7 +5,7 @@
 namespace numeric
 {
 	/**
-	 * Efficiently checks if x is a power of 2.
+	 * Efficiently tests if x is a power of 2.
 	 */
 	inline bool IsPowerOf2(ullong x)
 	{

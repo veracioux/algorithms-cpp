@@ -6,14 +6,13 @@
 #include <iostream>
 #include <iomanip>
 
+#include "../symbols.h"
+
 #define EPSILON (1e-15)
 #define ullong unsigned long long
 #define ELEMENT_TYPE(iterator) typename std::remove_reference<decltype(*iterator)>::type
 
 // Some typedefs
-
-template<class T>
-using Matrix = std::vector<std::vector<T>>;
 
 using DoubleMatrix = Matrix<double>;
 
