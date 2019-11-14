@@ -188,7 +188,6 @@ namespace logic
 				// Remove the incomplete term
 				dnf.erase(it);
 				it = dnf.begin();
-				return;
 			}
 			else ++it;
 		}
