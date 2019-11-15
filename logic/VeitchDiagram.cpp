@@ -40,7 +40,8 @@ namespace logic
 				contours.push_back(contour);
 			for (auto i : contour.rows)
 				for (auto j : contour.columns)
-					matrix[i][j] = term;
+					if (matrix[i][j] != 2)
+						matrix[i][j] = term;
 		}
 	}
 
@@ -274,28 +275,31 @@ namespace logic
 		}
 	}
 
-	std::ostream &operator<<(std::ostream &stream, const VeitchDiagram &diagram)
+	std::ostream &VeitchDiagram::Print(std::ostream &stream, bool drawBorders) const
 	{
 		// TODO Change height & width
-		std::vector<std::string> output(4 * diagram.GetHeight() + 1, std::string(8 * diagram.GetWidth() + 1, '0'));
+		std::vector<std::string> output(4 * GetHeight() + 1, std::string(8 * GetWidth() + 1, ' '));
 		int startX = 0, startY = 0, endX = output[0].size(), endY = output.size();
 		// Filling the output with the Veitch diagram before drawing any contours.
 		for (int i = startY; i < endY; ++i)
 			for (int j = startX; j < endX; ++j)
 			{
-				if (i % 4 == 0 && j % 8 != 0)
-					output[i][j] = '-';
-				else if (j % 8 == 0 && i % 4 != 0)
-					output[i][j] = '|';
-				else if (i % 4 == 0 && j % 4 == 0)
-					output[i][j] = '+';
-				else if (i % 4 == 2 && j % 8 == 4)
+				if (drawBorders)
+				{
+					if (i % 4 == 0 && j % 8 != 0)
+						output[i][j] = '-';
+					else if (j % 8 == 0 && i % 4 != 0)
+						output[i][j] = '|';
+					else if (i % 4 == 0 && j % 4 == 0)
+						output[i][j] = '+';
+				}
+				if (i % 4 == 2 && j % 8 == 4)
 					output[i][j] =
-							diagram.matrix[i / 4][j / 8] == 2 ? 'x' : '0' + diagram.matrix[i / 4][j / 8];
-				else output[i][j] = ' ';
+							matrix[i / 4][j / 8] == 2 ? 'x' : '0' + matrix[i / 4][j / 8];
+				//else output[i][j] = ' ';
 			}
-		for (auto &contour : diagram.contours)
-			DrawContour(output, contour, diagram.GetWidth(), diagram.GetHeight());
+		for (auto &contour : contours)
+			DrawContour(output, contour, GetWidth(), GetHeight());
 		// Sending the output to stream
 		for (int i = 0; i < output.size(); ++i)
 		{
@@ -303,5 +307,10 @@ namespace logic
 			stream << output[i];
 		}
 		return stream;
+	}
+
+	std::ostream &operator<<(std::ostream &stream, const VeitchDiagram &diagram)
+	{
+		return diagram.Print(stream);
 	}
 }

@@ -80,6 +80,8 @@ namespace logic
 
 		std::vector<Contour> GetContours() const;
 
+		std::ostream &Print(std::ostream &stream, bool drawBorders = true) const;
+
 		friend std::ostream &operator<<(std::ostream &stream, const VeitchDiagram &diagram);
 	};
 }
