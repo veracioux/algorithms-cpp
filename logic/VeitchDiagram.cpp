@@ -17,7 +17,7 @@ namespace logic
 			{{}, {0}},  // n=2
 			{{}, {0, 1},       {1, 2}}, // n=3
 			{{}, {0, 1},       {1, 2}}, // n=4
-			{{}, {0, 1, 4, 5}, {1, 2, 5, 6}, {1, 2}, {0, 1, 2, 3}} //n=5
+			{{}, {0, 1, 4, 5}, {1, 2, 5, 6}, {}, {0, 1, 2, 3}} //n=5
 	};
 
 	VeitchDiagram::VeitchDiagram(unsigned int nVariables) : nVariables(nVariables)
@@ -45,20 +45,18 @@ namespace logic
 		}
 	}
 
-	VeitchDiagram::VeitchDiagram(unsigned int nVariables, DNF dnf, bool shouldMinimize) : VeitchDiagram(nVariables, dnf,
-																										{},
-																										shouldMinimize)
+	VeitchDiagram::VeitchDiagram(unsigned int nVariables, DNF dnf, bool shouldMinimize) : VeitchDiagram(nVariables, dnf, {}, shouldMinimize)
 	{
 	}
 
 	ullong VeitchDiagram::GetWidth() const
 	{
-		return 1ULL << ((nVariables + 1) / 2);
+		return nVariables == 1 ? 1 : 1ULL << ((nVariables + 1) / 2);
 	}
 
 	ullong VeitchDiagram::GetHeight() const
 	{
-		return 1ULL << (nVariables / 2);
+		return nVariables == 1 ? 2 : 1ULL << (nVariables / 2);
 	}
 
 	unsigned int VeitchDiagram::GetNumberOfVariables() const
@@ -113,14 +111,10 @@ namespace logic
 			// Goes through the rows/columns of all other variables
 			for (int j = i - 1; j >= 0; --j)
 			{
-				if (!implicant.Contains(nVariables - 1 - j))
+				if (!implicant.Contains(nVariables - 1 - j)) // E D C B A
 					continue;
 				// Rows/columns of the chosen variable
-				auto other = rows ? GetVariableRows(j, !implicant[nVariables - 1 - j]) : GetVariableColumns(j,
-																											!implicant[
-																													nVariables -
-																													1 -
-																													j]);
+				auto other = rows ? GetVariableRows(j, !implicant[nVariables - 1 - j]) : GetVariableColumns(j, !implicant[nVariables - 1 - j]);
 				if (other.size() && std::find(other.begin(), other.end(), x) == other.end())
 					// The chosen column has not been found in the new variable
 					return false;
@@ -192,9 +186,7 @@ namespace logic
 	}
 
 	// Helper function
-	void DrawContour(
-			std::vector<std::string> &output, const VeitchDiagram::Contour &c, int width, int height, int startX,
-			int startY)
+	void DrawContour(std::vector<std::string> &output, const VeitchDiagram::Contour &c, int width, int height, int startX, int startY)
 	{
 		for (auto i : c.rows)
 		{
