@@ -84,7 +84,7 @@ namespace mccluskey_prog
 			}
 			else if (command == "veitch")
 			{
-				bool shouldMinimize = true, drawContours = true, drawBorders = true;
+				bool shouldMinimize = true, drawContours = true, drawBorders = true, showAll = false;
 				while (std::cin.peek() != '\n' && (std::cin >> std::ws, std::cin.peek() == '-'))
 				{
 					std::cin >> command;
@@ -92,6 +92,8 @@ namespace mccluskey_prog
 						shouldMinimize = false;
 					else if (command == "-noborders")
 						drawBorders = false;
+					else if (command == "-showall")
+						showAll = true;
 					else
 					{
 						std::cout << "Unknown option.\n";
@@ -103,8 +105,14 @@ namespace mccluskey_prog
 				unsigned char nVariables;
 				if (ExtractDNF(nVariables, dnf, dontCare))
 				{
-					logic::VeitchDiagram diagram(nVariables, dnf, dontCare, shouldMinimize);
-					diagram.Print(std::cout, drawBorders) << '\n';
+					if (showAll && shouldMinimize)
+						for (auto &mdnf : logic::GetMDNF(nVariables, dnf, dontCare))
+						{
+							logic::VeitchDiagram diagram(nVariables, mdnf, dontCare, false);
+							diagram.Print(std::cout, drawBorders) << '\n';
+						}
+					else
+						logic::VeitchDiagram(nVariables, dnf, dontCare, shouldMinimize).Print(std::cout, drawBorders);
 				}
 			}
 			else
@@ -134,6 +142,7 @@ namespace mccluskey_prog
 					   "\t-nominimize\tDo not minimize this function.\n"
 					   "\t-nocontours\tDraw the diagram without contours. (currently not supported)\n" //TODO add support
 					   "\t-noborders\tDo not draw table borders. Can cause for better readability.\n"
+					   "\t-showall\tShow Veitch diagrams for all MDNFs of this function (if 'minimize' is on). This is disabled by default.\n"
 					   "Examples:\n"
 					   "\t veitch ABC+ABC'+A'C 4\n"
 					   "\t veitch -nominimize ABC+AB'C 4 ABC' ABC\n";
