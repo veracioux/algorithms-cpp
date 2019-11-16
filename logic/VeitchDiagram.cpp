@@ -9,7 +9,7 @@ namespace logic
 			{{0}},  // n=2
 			{{0}}, // n=3
 			{{0, 1}, {}, {}, {1, 2}}, // n=4
-			{{0, 1}, {}, {}, {}, {1, 2}} //n=5
+			{{0, 1}, {}, {}, {1, 2}} //n=5
 	};
 	std::vector<unsigned int> columnLookupTable[5][5] = {
 			// A	 B   C   D    E
@@ -192,9 +192,10 @@ namespace logic
 	}
 
 	// Helper function
-	void DrawContour(std::vector<std::string> &output, const VeitchDiagram::Contour &c, int width, int height)
+	void DrawContour(
+			std::vector<std::string> &output, const VeitchDiagram::Contour &c, int width, int height, int startX,
+			int startY)
 	{
-		int startX = 0, startY = 0;
 		for (auto i : c.rows)
 		{
 			for (auto j : c.columns)
@@ -275,32 +276,129 @@ namespace logic
 		}
 	}
 
+	enum Pos
+	{
+		ABOVE, BELOW, LEFT, RIGHT
+	};
+
+	// Helper function, returns the drawing position of a variable in the diagram
+	Pos GetPosition(unsigned int index)
+	{
+		switch (index)
+		{
+			case 0: // A
+				return LEFT;
+			case 1: // B
+				return ABOVE;
+			case 2: // C
+				return BELOW;
+			case 3: // D
+				return RIGHT;
+			case 4: // E
+				return BELOW;
+		}
+		return LEFT;
+	}
+
+	// Helper function
+	std::vector<std::vector<unsigned int>> ContiguousPartition(const std::vector<unsigned int> &v)
+	{
+		std::vector<std::vector<unsigned int>> returnVec;
+		for (int i = 0; i < v.size(); ++i)
+		{
+			std::vector<unsigned int> temp{v[i]};
+			int j = i + 1;
+			for (; j < v.size() && v[j] - v[j - 1] == 1; ++j)
+				temp.push_back(v[j]);
+			returnVec.push_back(temp);
+			i = j - 1;
+		}
+		return returnVec;
+
+	}
+
 	std::ostream &VeitchDiagram::Print(std::ostream &stream, bool drawBorders) const
 	{
-		// TODO Change height & width
-		std::vector<std::string> output(4 * GetHeight() + 1, std::string(8 * GetWidth() + 1, ' '));
-		int startX = 0, startY = 0, endX = output[0].size(), endY = output.size();
+		// Holds the numbers of variables that are drawn above, below, left and right of the table, respectively.
+		unsigned char nPos[4]{};
+		for (int i = 0; i < nVariables; ++i)
+			++nPos[GetPosition(i)];
+		int startX = 4 * nPos[LEFT], startY = 2 * nPos[ABOVE],
+				endPaddingX = 4 * nPos[RIGHT], endPaddingY = 2 * nPos[BELOW];
+		std::vector<std::string> output(startY + 4 * GetHeight() + 1 + endPaddingY,
+										std::string(startX + 8 * GetWidth() + 1 + endPaddingX, ' '));
+		int endX = output[0].size() - endPaddingX, endY = output.size() - endPaddingY;
+		for (int i = nVariables - 1; i >= 0; --i)
+		{
+			Pos pos = GetPosition(i);
+			if (pos == LEFT)
+			{
+				auto allRows = ContiguousPartition(GetVariableRows(i, false));
+				for (auto &rows : allRows)
+				{
+					for (unsigned int row : rows)
+						for (int k = 1; k <= 3; ++k)
+							output[startY + 4 * row + k][startX - 4 * nPos[LEFT] + 2] = '|';
+					output[startY + 2 * (rows[0] + rows[rows.size() - 1]) + 2][startX - 4 * nPos[LEFT]] = 'A' + i;
+				}
+			}
+			else if (pos == ABOVE)
+			{
+				auto allColumns = ContiguousPartition(GetVariableColumns(i, false));
+				for (auto &columns : allColumns)
+				{
+					for (unsigned int column : columns)
+						for (int k = 1; k <= 7; ++k)
+							output[startY - 2 * nPos[ABOVE] + 1][startX + 8 * column + k] = '-';
+					output[startY - 2 * nPos[ABOVE]][startX + 4 * (columns[0] + columns[columns.size() - 1]) + 4] = 'A' + i;
+				}
+			}
+			else if (pos == BELOW)
+			{
+				auto allColumns = ContiguousPartition(GetVariableColumns(i, false));
+				for (auto &columns : allColumns)
+				{
+					for (unsigned int column : columns)
+						for (int k = 1; k <= 7; ++k)
+							output[endY + 2 * nPos[BELOW] - 2][startX + 8 * column + k] = '-';
+					output[endY + 2 * nPos[BELOW] - 1][startX + 4 * (columns[0] + columns[columns.size() - 1]) + 4] = 'A' + i;
+				}
+			}
+			else if (pos == RIGHT)
+			{
+				auto allRows = ContiguousPartition(GetVariableRows(i, false));
+				for (auto &rows : allRows)
+				{
+					for (unsigned int row : rows)
+						for (int k = 1; k <= 3; ++k)
+							output[startY + 4 * row + k][endX + 4 * nPos[RIGHT] - 3] = '|';
+					output[startY + 2 * (rows[0] + rows[rows.size() - 1]) + 2].at(endX + 4 * nPos[RIGHT] - 1) = 'A' + i;
+				}
+			}
+			--nPos[pos];
+		}
 		// Filling the output with the Veitch diagram before drawing any contours.
 		for (int i = startY; i < endY; ++i)
 			for (int j = startX; j < endX; ++j)
 			{
 				if (drawBorders)
 				{
-					if (i % 4 == 0 && j % 8 != 0)
+					if ((i - startY) % 4 == 0 && (j - startX) % 8 != 0)
 						output[i][j] = '-';
-					else if (j % 8 == 0 && i % 4 != 0)
+					else if ((j - startX) % 8 == 0 && (i - startY) % 4 != 0)
 						output[i][j] = '|';
-					else if (i % 4 == 0 && j % 4 == 0)
+					else if ((i - startY) % 4 == 0 && (j - startX) % 4 == 0)
 						output[i][j] = '+';
 				}
-				if (i % 4 == 2 && j % 8 == 4)
+				if ((i - startY) % 4 == 2 && (j - startX) % 8 == 4)
 					output[i][j] =
-							matrix[i / 4][j / 8] == 2 ? 'x' : '0' + matrix[i / 4][j / 8];
-				//else output[i][j] = ' ';
+							matrix[(i - startY) / 4][(j - startX) / 8] == 2
+							? 'x' : '0' + matrix[(i - startY) / 4][(j - startX) / 8];
 			}
+		// Drawing contours
 		for (auto &contour : contours)
-			DrawContour(output, contour, GetWidth(), GetHeight());
-		// Sending the output to stream
+			DrawContour(output, contour, GetWidth(), GetHeight(), startX, startY);
+		// Sending output to stream
 		for (int i = 0; i < output.size(); ++i)
 		{
 			if (i != 0) stream << std::string{'\n'};

@@ -111,7 +111,6 @@ namespace mccluskey_prog
 				std::cout << "Unknown command.\n";
 		}
 		std::cout << "Quitting McCluskey.\n";
-		//std::getline(std::cin, std::string());
 		return 0;
 	}
 
