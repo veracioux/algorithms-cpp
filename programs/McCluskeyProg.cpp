@@ -112,7 +112,7 @@ namespace mccluskey_prog
 							diagram.Print(std::cout, drawBorders) << '\n';
 						}
 					else
-						logic::VeitchDiagram(nVariables, dnf, dontCare, shouldMinimize).Print(std::cout, drawBorders);
+						logic::VeitchDiagram(nVariables, dnf, dontCare, shouldMinimize).Print(std::cout, drawBorders) << '\n';
 				}
 			}
 			else
