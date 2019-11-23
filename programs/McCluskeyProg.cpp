@@ -43,7 +43,6 @@ namespace mccluskey_prog
 					 "* McCluskey minimization algorithm *\n"
 					 "************************************\n\n"
 					 "Type 'help' for a list of commands\n\n";
-
 		for (;;)
 		{
 			std::cout << ">> ";
@@ -126,8 +125,8 @@ namespace mccluskey_prog
 	{
 		if (command == "minimize")
 			std::cout
-					<< "Minimize the logical function specified as the argument. Currently supports only disjunctive normal forms\n" //TODO change in future
-					   "Proper usage:\n\t minimimize %Function% %Number of variables% %[optional] Don't care combinations%\n"
+					<< "Minimize the logical function specified as the argument. Currently supports only disjunctive normal forms.\n" //TODO change in future
+					   "Usage:\n\t minimize %Function% %Number of variables% %[optional] Don't care combinations%\n"
 					   "Examples:\n"
 					   "\t minimize ABC+ABC'+A'C 4\n"
 					   "\t minimize ABC+AB'C 4 ABC' ABC\n";
@@ -136,7 +135,7 @@ namespace mccluskey_prog
 					<< "Draw a Veitch diagram based on the logical function specified as the argument. Currently supports only disjunctive normal forms.\n"
 					   "The diagram will contain contours based on the specified DNF if 'minimize' option is off, and optimal contours if 'minimize' is on.\n"
 					   "Minimization is enabled by default (if -nominimize is not specified). If there are multiple MDNFs of this function, all such diagrams will be shown.\n"
-					   "Proper usage:\n"
+					   "Usage:\n"
 					   "\tveitch %Function% %Number of variables% %[optional] Don't care combinations%\n"
 					   "Options (specified after the command):\n"
 					   "\t-nominimize\tDo not minimize this function.\n"

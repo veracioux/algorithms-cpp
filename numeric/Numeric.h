@@ -1,7 +1,7 @@
 #pragma once
 
 #include <type_traits>
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include <iostream>
 #include <iomanip>
