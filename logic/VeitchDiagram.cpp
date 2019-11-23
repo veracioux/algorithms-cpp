@@ -246,16 +246,6 @@ namespace logic
 						for (int k = 3; k <= 4; ++k)
 							output[centerY + 1][centerX + k] = '-';
 				}
-				// Left intersection
-				if (left && j != 0)
-				{
-					if (!above)
-						for (int k = 3; k <= 4; ++k)
-							output[centerY - 1][centerX - k] = '-';
-					if (!below)
-						for (int k = 3; k <= 4; ++k)
-							output[centerY + 1][centerX - k] = '-';
-				}
 				// Above intersection
 				if (above && i != 0)
 				{
