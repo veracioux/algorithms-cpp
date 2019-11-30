@@ -71,8 +71,8 @@ namespace mccluskey_prog
 
 	bool ExtractDNFFromMinterms(unsigned char &n, logic::DNF &dnf, logic::DNF &dontCare)
 	{
-
-		if (!GetCommaSeparatedValues(dnf, n))
+		logic::DNF temp;
+		if (!GetCommaSeparatedValues(temp, n))
 		{
 			std::cout << "The specified logical function is of illegal format.\n";
 			return false;
@@ -85,6 +85,9 @@ namespace mccluskey_prog
 			return false;
 		}
 		else n = nVariables;
+		std::transform(temp.begin(), temp.end(), std::inserter(dnf, dnf.begin()), [&](auto &x) {
+			return logic::Implicant(x.GetForm(), n);
+		});
 		if (!GetCommaSeparatedValues(dontCare, n))
 		{
 			std::cout << "The specified logical function is of illegal format.\n";
