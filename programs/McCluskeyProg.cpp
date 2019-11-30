@@ -3,7 +3,7 @@
 
 namespace mccluskey_prog
 {
-	bool GetCommaSeparatedValues(logic::DNF &dnf, unsigned char nVariables)
+	bool GetCommaSeparatedValues(logic::DNF &dnf, unsigned char nVariables = 0)
 	{
 		if (std::cin.peek() == '\n') return true;
 		for (;;)
@@ -19,7 +19,7 @@ namespace mccluskey_prog
 				}
 				std::cin.clear();
 			}
-			dnf.insert(logic::Implicant(x, nVariables));
+			dnf.insert(logic::Implicant(x, nVariables == 0 ? ~0ULL : nVariables));
 			int nCommas = 0;
 			while (std::cin.peek() == ' ' || std::cin.peek() == ',')
 				if (std::cin.get() == ',' && ++nCommas > 1)
