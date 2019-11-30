@@ -246,6 +246,16 @@ namespace logic
 						for (int k = 3; k <= 4; ++k)
 							output[centerY + 1][centerX + k] = '-';
 				}
+				// Left intersection
+				if (left && j != 0)
+				{
+					if (!above)
+						for (int k = 3; k <= 4; ++k)
+							output[centerY - 1][centerX - k] = '-';
+					if (!below)
+						for (int k = 3; k <= 4; ++k)
+							output[centerY + 1][centerX - k] = '-';
+				}
 				// Above intersection
 				if (above && i != 0)
 				{
@@ -253,6 +263,14 @@ namespace logic
 						output[centerY - 2][centerX - 2] = '|';
 					if (!right)
 						output[centerY - 2][centerX + 2] = '|';
+				}
+				// Below intersection
+				if (below && i != height - 1)
+				{
+					if (!left)
+						output[centerY + 2][centerX - 2] = '|';
+					if (!right)
+						output[centerY + 2][centerX + 2] = '|';
 				}
 			}
 		}
@@ -278,8 +296,9 @@ namespace logic
 				return RIGHT;
 			case 4: // E
 				return BELOW;
+			default:
+				return LEFT;
 		}
-		return LEFT;
 	}
 
 	// Helper function
