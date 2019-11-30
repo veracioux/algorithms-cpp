@@ -114,7 +114,7 @@ namespace logic
 				if (!implicant.Contains(nVariables - 1 - j)) // E D C B A
 					continue;
 				// Rows/columns of the chosen variable
-				auto other = rows ? GetVariableRows(j, !implicant[nVariables - 1 - j]) : GetVariableColumns(j, !implicant[nVariables - 1 - j]);
+				auto other = rows ? this->GetVariableRows(j, !implicant[nVariables - 1 - j]) : this->GetVariableColumns(j, !implicant[nVariables - 1 - j]);
 				if (other.size() && std::find(other.begin(), other.end(), x) == other.end())
 					// The chosen column has not been found in the new variable
 					return false;
