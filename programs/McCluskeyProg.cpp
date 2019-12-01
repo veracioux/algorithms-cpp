@@ -74,6 +74,7 @@ namespace mccluskey_prog
 		logic::DNF temp;
 		if (!GetCommaSeparatedValues(temp, n))
 		{
+			CinReset();
 			std::cout << "The specified logical function is of illegal format.\n";
 			return false;
 		}
@@ -90,6 +91,7 @@ namespace mccluskey_prog
 		});
 		if (!GetCommaSeparatedValues(dontCare, n))
 		{
+			CinReset();
 			std::cout << "The specified logical function is of illegal format.\n";
 			return false;
 		}
@@ -132,7 +134,7 @@ namespace mccluskey_prog
 			else if (command == "minimize")
 			{
 				logic::DNF dnf, dontCare;
-				unsigned char nVariables;
+				unsigned char nVariables = 0;
 				bool minterms = false;
 				while (std::cin.peek() != '\n' && (std::cin >> std::ws, std::cin.peek() == '-'))
 				{
@@ -178,7 +180,7 @@ namespace mccluskey_prog
 					//TODO else if (command == "-nocontours")
 				}
 				logic::DNF dnf, dontCare;
-				unsigned char nVariables;
+				unsigned char nVariables = 0;
 				if (minterms ? ExtractDNFFromMinterms(nVariables, dnf, dontCare) : ExtractDNF(nVariables, dnf, dontCare))
 				{
 					if (showAll && shouldMinimize)
