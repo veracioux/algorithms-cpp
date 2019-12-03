@@ -40,9 +40,7 @@ namespace logic
 	{
 		ConvertToCanonicalSumOfProducts(nVariables, dnf);
 		dnf.insert(dontCare.begin(), dontCare.end());
-		for (auto &x: dnf);
 		std::set<DNF> returnSet;
-		std::set<int> numOfLettersSet;
 		DNF implicants = dnf, primeImplicants;
 		bool arePrime = false;
 		while (!arePrime)
@@ -50,7 +48,6 @@ namespace logic
 		// At this point, all prime implicants have been found and placed into "primeImplicants"
 		// We clear "implicants" because we will use it to store essential implicants
 		implicants.clear();
-		int implicantsNumOfLetters = 0;
 		/* We have to remove all dnf that are covered by only one implicant
 		 * and we have to remove such implicants from "primeImplicants" for more efficient generation
 		 * of DNFs. We will store those implicants in "implicants", so we can add
@@ -77,7 +74,6 @@ namespace logic
 				if (implicantCounter == 1)
 				{
 					implicants.insert(*itImplicant);
-					implicantsNumOfLetters += itImplicant->GetNumberOfSymbols();
 					// Finds all minterms that are covered by this implicant and removes them from consideration
 					for (auto it1 = dnf.begin(); it1 != dnf.end();)
 						if (*itImplicant << *it1)
@@ -99,7 +95,7 @@ namespace logic
 			auto combination = CreateCombination(primeImplicants, size);
 			do
 			{
-				int numOfLetters = implicantsNumOfLetters;
+				ullong numOfLetters = 0;
 				// Tests if the current combination of implicants is a valid irreducible DNF and forms a set accordingly
 				if (AreCoveredBy(dnf, combination))
 				{
@@ -110,23 +106,20 @@ namespace logic
 						numOfLetters += implicant.GetNumberOfSymbols();
 						IDNF.insert(implicant);
 					}
-					// If we already had an IDNF that has fewer letters, then this IDNF cannot possibly be an MDNF
-					if (numOfLetters <= minLetters)
+					if (numOfLetters == minLetters) // Keep this IDNF until we find a more favorable one (if ever)
 					{
 						IDNF.insert(implicants.begin(), implicants.end());
 						returnSet.insert(IDNF);
-						numOfLettersSet.insert(numOfLetters);
 					}
-					if (numOfLetters < minLetters) minLetters = numOfLetters;
+					else if (numOfLetters < minLetters) // This IDNF has fewer letters than all others => the others are not MDNFs
+					{
+						minLetters = numOfLetters;
+						IDNF.insert(implicants.begin(), implicants.end());
+						returnSet = {IDNF};
+					}
 				}
 			} while (NextCombination(combination, primeImplicants.end()));
 		}
-		// Now we have to remove all DNFs that contain more letters than "minLetters"
-		auto itLetters = numOfLettersSet.begin();
-		for (auto it = returnSet.begin(); it != returnSet.end(); ++itLetters)
-			if (*itLetters > minLetters) // This DNF has more letters than necessary => it is not an MDNF
-				it = returnSet.erase(it);
-			else ++it;
 		return returnSet;
 	}
 
