@@ -28,3 +28,5 @@ void test10();
 void test11();
 
 void test12();
+
+void testExtrapolate1();

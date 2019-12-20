@@ -1,8 +1,10 @@
 #include "McCluskeyTest.h"
+#include <stdexcept>
 
 void test1()
 {
 	PrintMDNF(4, {4, 5, 6, 9, 11, 13});
+	// Expected: BC'D+AB'D+A'BD'
 }
 
 void test2()
@@ -12,6 +14,7 @@ void test2()
 				  {"AB'C"},
 				  {"A'BC"},
 				  {"A'B'C"}});
+	// Expected: AB+C
 }
 
 void test3()
@@ -113,4 +116,15 @@ void test12()
 				  {"ACE",     5},
 				  {"ABDE",    5},
 				  {"AB'D'E'", 5}});
+	// Expected: AB'D'+ABD+AB'E+CE
+	//			 AB'D'+ABD+ADE+CE
+}
+
+void testExtrapolate1()
+{
+	SetNumberOfVariables(4);
+	Implicant i = {"D"};
+	std::cout << std::string(i);
+	DNF dnf;
+	ExtrapolateMintermsAndAdd(4, i, dnf);
 }
