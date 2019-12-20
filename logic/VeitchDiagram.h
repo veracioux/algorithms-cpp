@@ -62,7 +62,7 @@ namespace logic
 		/**
 		 * Calls <code>VeitchDiagram(nVariables, dnf, {}, shouldMinimize)</code> to construct a Veitch diagram.
 		 */
-		VeitchDiagram(unsigned int nVariables, DNF dnf, bool shouldMinimize = false);
+		VeitchDiagram(unsigned int nVariables, const DNF &dnf, bool shouldMinimize = false);
 
 		// Getters
 

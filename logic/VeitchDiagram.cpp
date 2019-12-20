@@ -45,7 +45,7 @@ namespace logic
 		}
 	}
 
-	VeitchDiagram::VeitchDiagram(unsigned int nVariables, DNF dnf, bool shouldMinimize) : VeitchDiagram(nVariables, dnf, {}, shouldMinimize)
+	VeitchDiagram::VeitchDiagram(unsigned int nVariables, const DNF &dnf, bool shouldMinimize) : VeitchDiagram(nVariables, dnf, {}, shouldMinimize)
 	{
 	}
 
@@ -132,7 +132,7 @@ namespace logic
 			if (implicant.Contains(nVariables - 1 - i)) // Order of variables: E D C B A
 			{
 				auto testRows = GetVariableRows(i, !implicant[nVariables - 1 - i]);
-				if (!rowsDone && testRows.size())
+				if (!rowsDone && !testRows.empty())
 				{ // This variable is determined by a set of rows, find intersection of rows
 					rowsDone = true;
 					contour.rows = GetIntersection(testRows, i, implicant, true);
@@ -141,7 +141,7 @@ namespace logic
 					else continue;
 				}
 				auto testColumns = GetVariableColumns(i, !implicant[nVariables - 1 - i]);
-				if (!columnsDone && testColumns.size())
+				if (!columnsDone && !testColumns.empty())
 				{ // This variable is determined by a set of columns, find intersection of columns
 					columnsDone = true;
 					contour.columns = GetIntersection(testColumns, i, implicant, false);
@@ -176,7 +176,7 @@ namespace logic
 		return std::find(v.begin(), v.end(), x) != v.end();
 	}
 
-	// Helper function
+	// Helper function, puts a table delimiting character, but takes into consideration any intersections
 	void Put(char &slot, char newChar)
 	{
 		if (slot != ' ' && slot != newChar)
@@ -301,7 +301,7 @@ namespace logic
 		}
 	}
 
-	// Helper function
+	// Helper function, partitions a vector into vectors whose elements are contiguous in value
 	std::vector<std::vector<unsigned int>> ContiguousPartition(const std::vector<unsigned int> &v)
 	{
 		std::vector<std::vector<unsigned int>> returnVec;
