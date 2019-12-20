@@ -5,6 +5,7 @@ namespace logic
 {
 	DNF Combine(const DNF &implicants, bool &arePrime, DNF &primeImplicants)
 	{
+		//TODO Which assumptions can I make regarding the ordering?
 		DNF returnSet;
 		primeImplicants.insert(implicants.begin(), implicants.end());
 		arePrime = true;
@@ -48,7 +49,7 @@ namespace logic
 		// At this point, all prime implicants have been found and placed into "primeImplicants"
 		// We clear "implicants" because we will use it to store essential implicants
 		implicants.clear();
-		/* We have to remove all dnf that are covered by only one implicant
+		/* We have to remove all DNFs that are covered by only one implicant
 		 * and we have to remove such implicants from "primeImplicants" for more efficient generation
 		 * of DNFs. We will store those implicants in "implicants", so we can add
 		 * them to our final result.
@@ -123,7 +124,7 @@ namespace logic
 		return returnSet;
 	}
 
-	std::string ToLiteral(DNF DNF, unsigned char n)
+	std::string ToLiteral(const DNF &dnf, unsigned char n)
 	{
 		if (n > numeric::LONG_LONG_SIZE)
 			throw std::domain_error("Illegal number of variables");
@@ -131,9 +132,9 @@ namespace logic
 			n = __numberOfVariables;
 		std::string literal;
 		// Iterates through all elementary conjunctions in the given DNF
-		for (auto it = DNF.begin(); it != DNF.end(); ++it)
+		for (auto it = dnf.begin(); it != dnf.end(); ++it)
 		{
-			if (it != DNF.begin()) literal += '+';
+			if (it != dnf.begin()) literal += '+';
 			literal += it->ToLiteral(n);
 		}
 		return literal;
@@ -153,36 +154,45 @@ namespace logic
 		}
 	}
 
+	void _ExtrapolateMintermsAndAdd(ullong mintermMask, const Implicant &implicant, DNF &dnf, unsigned char startIndex = 0)
+	{
+		if (implicant.GetMask() != mintermMask)
+		{
+			// This implicant is missing a variable
+			ullong sampler = 1ULL << startIndex;
+			// We sample all bits in the mask, looking for missing variables
+			do
+			{
+				++startIndex;
+				if ((implicant.GetMask() & sampler) == 0)
+				{
+					_ExtrapolateMintermsAndAdd(mintermMask, Implicant(implicant.GetForm() | sampler, implicant.GetMask() | sampler), dnf, startIndex);
+					_ExtrapolateMintermsAndAdd(mintermMask, Implicant(implicant.GetForm() & ~sampler, implicant.GetMask() | sampler), dnf,
+											   startIndex);
+					return;
+				}
+				sampler <<= 1U;
+			} while (sampler & mintermMask);
+		}
+		else
+			dnf.insert(implicant);
+	}
+
+	void ExtrapolateMintermsAndAdd(unsigned char nVariables, const Implicant &implicant, DNF &dnf)
+	{
+		_ExtrapolateMintermsAndAdd((1ULL << nVariables) - 1, implicant, dnf);
+	}
+
 	void ConvertToCanonicalSumOfProducts(unsigned char nVariables, DNF &dnf)
 	{
-		// TODO Do some optimizations
 		if (nVariables)
 			SetNumberOfVariables(nVariables);
+		else
+			nVariables = __numberOfVariables;
+		DNF newDNF;
 		ullong mintermMask = (1ULL << nVariables) - 1;
-		for (auto it = dnf.begin(); it != dnf.end();)
-		{
-			auto &x = *it;
-			if (x.GetMask() != mintermMask)
-			{
-				// We have found a DNF that is missing a variable
-				ullong sampler = 1ULL;
-				// We sample all bits in the mask, looking for missing variables
-				do
-				{
-					if ((x.GetMask() & sampler) == 0)
-					{
-						// Insert a term with a 1 in the empty slot
-						dnf.insert(Implicant(x.GetForm() | sampler, x.GetMask() | sampler));
-						// Insert a term with a 0 in the empty slot
-						dnf.insert(Implicant(x.GetForm() & ~sampler, x.GetMask() | sampler));
-					}
-					sampler <<= 1U;
-				} while (sampler & mintermMask);
-				// Remove the incomplete term
-				dnf.erase(it);
-				it = dnf.begin();
-			}
-			else ++it;
-		}
+		for (auto x : dnf)
+			_ExtrapolateMintermsAndAdd(mintermMask, x, newDNF);
+		dnf = std::move(newDNF);
 	}
 }

@@ -74,6 +74,11 @@ namespace logic
 	}
 
 	/**
+	 * Inserts all minterms that can be combined to \p implicant, into \p dnf.
+	 */
+	void ExtrapolateMintermsAndAdd(unsigned char nVariables, const Implicant &implicant, DNF &dnf);
+
+	/**
 	 * Adds the missing terms in order to get a sum of products form.
 	 * @param dnf - The input and output DNF.
 	 * @param[optional] - nVariables The number of variables of the function \p dnf represents.
@@ -85,16 +90,17 @@ namespace logic
 	 * @param nVariables Number of variables of the logical function.
 	 * @param dnf - Base disjunctive normal form that constitutes a logical function.
 	 * @param[optional] dontCare - Set that contains which minterms are don't care. Any elements must be minterms.
-	 * @return Set of minimal disjunctive normal forms for the logical function given my \p minterms and \p dontCare.
+	 * @return Set of minimal disjunctive normal forms for the logical function given by \p minterms and \p dontCare.
 	 */
 	std::set<DNF> GetMDNF(unsigned char nVariables, DNF dnf, const DNF &dontCare = {});
 
 	/**
 	 * Takes a disjunctive normal form and returns its textual/mathematical representation.
-	 * @param DNF - Set of implicants.
+	 * @param dnf - Set of implicants.
 	 * @param n - Number of variables of the logical function.
 	 */
-	std::string ToLiteral(DNF DNF, unsigned char n);
+	std::string ToLiteral(const DNF &dnf, unsigned char n);
 
 	void PrintMDNF(unsigned char nVariables, const DNF &minterms, const DNF &dontCare = {});
+
 }
