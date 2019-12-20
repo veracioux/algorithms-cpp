@@ -159,6 +159,11 @@ namespace logic
 		Implicant operator|(const Implicant &x);
 
 		/**
+		 * @return The same as <code>ToLiteral</code>, using the pre-specified number of variables.
+		 */
+		operator std::string();
+
+		/**
 	     *  Write an implicant to a stream in the same format as returned by <code>ToLiteral()</code>.
 	     *  @param o - Output stream.
 	     *  @param x - Implicant to write out.

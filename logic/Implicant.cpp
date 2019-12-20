@@ -49,14 +49,13 @@ namespace logic
 	{
 		if (n > numeric::LONG_LONG_SIZE)
 			throw std::domain_error("Illegal number of variables");
-
 		std::string literal;
 		// Sampler contains a 1 only on the bit of interest
 		ullong sampler;
 		if (n == 0)
-			for (sampler = 1ULL << (numeric::LONG_LONG_SIZE - 1); !(sampler & mask); sampler >>= 1U);
+			for (sampler = 1ULL << ullong(numeric::LONG_LONG_SIZE - 1); !(sampler & mask); sampler >>= 1U);
 		else
-			sampler = 1ULL << (n - 1);
+			sampler = 1ULL << ullong(n - 1);
 		char c = 'A';
 		do
 		{
@@ -167,6 +166,11 @@ namespace logic
 	{
 		//TODO can achieve marginal performance improvement, but too lazy.
 		return Implicant(*this) |= x;
+	}
+
+	Implicant::operator std::string()
+	{
+		return ToLiteral(__numberOfVariables);
 	}
 
 	// Other functions
