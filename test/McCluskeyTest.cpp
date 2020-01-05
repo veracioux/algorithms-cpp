@@ -9,17 +9,17 @@ void test1()
 
 void test2()
 {
-	PrintMDNF(3, {{"ABC'"},
-				  {"ABC"},
-				  {"AB'C"},
-				  {"A'BC"},
-				  {"A'B'C"}});
+	PrintMDNF(3, {"ABC'",
+				  "ABC",
+				  "AB'C",
+				  "A'BC",
+				  "A'B'C"});
 	// Expected: AB+C
 }
 
 void test3()
 {
-	PrintMDNF(4, {0, 1, 2, 3, 4, 5, 6, 10, 14}, {7, 11, 15});
+	PrintMDNF(4, {0ULL, 1, 2, 3, 4, 5, 6, 10, 14}, {7, 11, 15});
 }
 
 void test4()
@@ -70,7 +70,7 @@ void test8()
 
 void test9()
 {
-	PrintMDNF(4, {0,
+	PrintMDNF(4, {0ULL,
 				  2,
 				  3,
 				  5,
@@ -84,7 +84,7 @@ void test9()
 
 void test10()
 {
-	PrintMDNF(4, {0,
+	PrintMDNF(4, {0ULL,
 				  1,
 				  2,
 				  5,

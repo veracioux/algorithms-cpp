@@ -52,6 +52,12 @@ namespace logic
 		Implicant(const std::string &literal, unsigned char nVariables = 0);
 
 		/**
+		 * @see <code>Implicant(const std::string &, unsigned char)</code>;
+		 */
+		Implicant(const char *literal, unsigned char nVariables = 0) : Implicant(std::string(literal), nVariables)
+		{}
+
+		/**
 		 * Creates an implicant/minterm as specified by \p form
 		 * with a mask that covers all variables.
 		 * @param nVariables - Number of variables.
