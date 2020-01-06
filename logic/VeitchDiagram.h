@@ -46,15 +46,15 @@ namespace logic
 		explicit VeitchDiagram(unsigned int nVariables);
 
 		/**
-		 * Constructs a Veitch diagram for the specified number of variables and
-		 * filled according to the logical function specified by \p dnf and \p dontCare .
-		 * Contours are constructed based on the specified form if \p shouldMinimize = <code>false</code>
+		 * Construct a Veitch diagram for the specified number of variables and
+		 * filled according to the logical function specified by <code>dnf</code> and <code>dontCare</code> .
+		 * Contours are constructed based on the specified form if <code>shouldMinimize = false</code>
 		 * and on the minimized form otherwise. If there are multiple minimal forms, the first
 		 * one returned by <code>logic::GetMDNF</code> will be used.
 		 * @param nVariables - Number of variables.
 		 * @param dnf - Disjunctive normal form of the logical function.
 		 * @param[optional] dontCare - Minterms that represent don't care combinations.
-		 * @param[optional] shouldMinimize - Whether the DNF specified by \p dnf has been previously minimized
+		 * @param[optional] shouldMinimize - Whether the DNF specified by <code>dnf</code> has been previously minimized
 		 * represented by this Veitch diagram. Default value is <code>false</code>.
 		 */
 		VeitchDiagram(unsigned int nVariables, DNF dnf, const DNF &dontCare = {}, bool shouldMinimize = false);

@@ -27,8 +27,7 @@ namespace logic
 		 * @param mask - Binary number, set bits represent variables
 		 * that are included.
 		 *
-		 * @example The implicant A'B'C (n=4) has the following \p form :
-		 * 	<code>0b0010</code> , \p mask : <code>0b1110</code>
+		 * @example The implicant A'B'C (n=4) has the following <code>form: 0b0010</code> , <code>mask: 0b1110</code>
 		 */
 		Implicant(ullong form, ullong mask);
 
@@ -58,7 +57,7 @@ namespace logic
 		{}
 
 		/**
-		 * Creates an implicant/minterm as specified by \p form
+		 * Creates an implicant/minterm as specified by <code>form</code>
 		 * with a mask that covers all variables.
 		 * @param nVariables - Number of variables.
 		 *
@@ -86,7 +85,7 @@ namespace logic
 		bool operator[](unsigned char index) const;
 
 		/**
-		 * Returns the number of negated variables in the implicant.
+		 * Return the number of negated variables in the implicant.
 		 */
 		int GetNegations() const;
 
@@ -117,7 +116,7 @@ namespace logic
 		// Relational operators
 
 		/**
-		 * @return Whether <code>this</code> is before \p x
+		 * @return Whether <code>this</code> is before <code>x</code>
 		 * @note Implicant x is before implicant y if the following holds: <br>
 		 * - They have the same mask and x.form is less than y.form <br>
 		 * - x.mask > y.mask
@@ -125,41 +124,41 @@ namespace logic
 		bool operator<(const Implicant &x) const;
 
 		/**
-		 * @return Whether this implicant can be combined with implicant \p x
+		 * @return Whether this implicant can be combined with implicant <code>x</code>
 		 * @note Two implicant can be combined if and only if they contain
 		 * the same variables and differ by exactly one negation.
 		 */
 		bool CanCombineWith(const Implicant &x) const;
 
 		/**
-		 * Returns whether \p x implies <code>this</code>.
+		 * Return whether <code>x</code> implies <code>this</code>.
 		 */
 		bool ImpliedBy(const Implicant &x) const;
 
 		/**
-		 * @return Whether <code>this</code> implies \p x.
+		 * @return Whether <code>this</code> implies <code>x</code>.
 		 */
 		bool operator>>(const Implicant &x) const;
 
 		/**
-		 * @return Whether \p x implies <code>this</code>.
+		 * @return Whether <code>x</code> implies <code>this</code>.
 		 * @see <code>ImpliedBy(const Implicant&)</code>
 		 */
 		bool operator<<(const Implicant &x) const;
 
 		/**
-		 * Combine this implicant with \p x.
+		 * Combine this implicant with <code>x</code>.
 		 */
 		void Combine(const Implicant &x);
 
 		/**
-		 * Combine this implicant with \p x.
+		 * Combine this implicant with <code>x</code>.
 		 * @see <code>Combine(const Implicant&)</code>
 		 */
 		Implicant &operator|=(const Implicant &x);
 
 		/**
-		 * Combine this implicant with \p x.
+		 * Combine this implicant with <code>x</code>.
 		 * @see <code>Combine(const Implicant&)</code>
 		 */
 		Implicant operator|(const Implicant &x);

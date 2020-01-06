@@ -5,7 +5,7 @@
 namespace logic
 {
 	/**
-	 * @return The result of combining implicants \p x and \p y.
+	 * @return The result of combining implicants <code>x</code> and <code>y</code>.
 	 */
 	Implicant Combine(Implicant x, const Implicant &y);
 
@@ -19,7 +19,7 @@ namespace logic
 	DNF Combine(const DNF &implicants, bool &arePrime, DNF &primeImplicants);
 
 	/**
-	 * @return Whether the logical function specified by \p minterms is covered by \p implicants.
+	 * @return Whether the logical function specified by <code>minterms</code> is covered by <code>implicants</code>.
 	 * @param minterms - Set of minterms that form a logical function.
 	 * @param implicants - Vector of iterators that point to implicants.
 	 */
@@ -28,7 +28,7 @@ namespace logic
 			const std::vector<decltype(DNF().begin())> &implicants);
 
 	/**
-	 * Creates a vector of iterators that point to the first \p n elements of \p container, starting with the element at <code>container.begin()</code>.
+	 * Creates a vector of iterators that point to the first <code>n</code> elements of <code>container</code>, starting with the element at <code>container.begin()</code>.
 	 */
 	template<class Container>
 	std::vector<decltype((new Container())->begin())>
@@ -42,7 +42,7 @@ namespace logic
 	}
 
 	/**
-	 * Creates a vector of iterators that point to the first \p n elements of \p container.
+	 * Creates a vector of iterators that point to the first <code>n</code> elements of <code>container</code>.
 	 */
 	template<class Container>
 	std::vector<decltype((new Container())->begin())> CreateCombination(const Container &container, int n)
@@ -51,7 +51,7 @@ namespace logic
 	}
 
 	/**
-	 * Finds the next combination of elements of a set and stores it in \p combination.
+	 * Finds the next combination of elements of a set and stores it in <code>combination</code>.
 	 * @param end - Iterator that points to the last element of the set.
 	 * @return Whether the the combination could be advanced.
 	 */
@@ -74,14 +74,14 @@ namespace logic
 	}
 
 	/**
-	 * Inserts all minterms that can be combined to \p implicant, into \p dnf.
+	 * Inserts all minterms that can be combined to <code>implicant</code>, into <code>dnf</code>.
 	 */
 	void ExtrapolateMintermsAndAdd(unsigned char nVariables, const Implicant &implicant, DNF &dnf);
 
 	/**
 	 * Adds the missing terms in order to get a sum of products form.
 	 * @param dnf - The input and output DNF.
-	 * @param[optional] - nVariables The number of variables of the function \p dnf represents.
+	 * @param - nVariables The number of variables of the function <code>dnf</code> represents.
 	 * If this is not specified, the number of variables will be automatically determined.
 	 */
 	void ConvertToCanonicalSumOfProducts(unsigned char nVariables, DNF &dnf);
@@ -90,7 +90,7 @@ namespace logic
 	 * @param nVariables Number of variables of the logical function.
 	 * @param dnf - Base disjunctive normal form that constitutes a logical function.
 	 * @param[optional] dontCare - Set that contains which minterms are don't care. Any elements must be minterms.
-	 * @return Set of minimal disjunctive normal forms for the logical function given by \p minterms and \p dontCare.
+	 * @return Set of minimal disjunctive normal forms for the logical function given by <code>minterms</code> and <code>dontCare</code>.
 	 */
 	std::set<DNF> GetMDNF(unsigned char nVariables, DNF dnf, const DNF &dontCare = {});
 
