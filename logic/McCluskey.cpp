@@ -104,7 +104,7 @@ namespace logic
 					for (auto &iterImplicant : combination)
 					{
 						auto implicant = *iterImplicant;
-						numOfLetters += implicant.GetNumberOfSymbols();
+						numOfLetters += implicant.GetVariableCount();
 						IDNF.insert(implicant);
 					}
 					if (numOfLetters == minLetters) // Keep this IDNF until we find a more favorable one (if ever)
@@ -129,7 +129,13 @@ namespace logic
 		if (n > numeric::LONG_LONG_SIZE)
 			throw std::domain_error("Illegal number of variables");
 		else if (n == 0)
-			n = __numberOfVariables;
+		{
+			for (auto impl : dnf)
+			{
+				int x = impl.GetVariableCount();
+				if (x > n) n = x;
+			}
+		}
 		std::string literal;
 		// Iterates through all elementary conjunctions in the given DNF
 		for (auto it = dnf.begin(); it != dnf.end(); ++it)
@@ -140,14 +146,8 @@ namespace logic
 		return literal;
 	}
 
-	void SetNumberOfVariables(unsigned char n)
-	{
-		__numberOfVariables = n;
-	}
-
 	void PrintMDNF(unsigned char nVariables, const DNF &minterms, const DNF &dontCare)
 	{
-		SetNumberOfVariables(nVariables);
 		for (auto &x : GetMDNF(nVariables, minterms, dontCare))
 		{
 			std::cout << ToLiteral(x, nVariables) << std::endl;
@@ -185,10 +185,6 @@ namespace logic
 
 	void ConvertToCanonicalSumOfProducts(unsigned char nVariables, DNF &dnf)
 	{
-		if (nVariables)
-			SetNumberOfVariables(nVariables);
-		else
-			nVariables = __numberOfVariables;
 		DNF newDNF;
 		ullong mintermMask = (1ULL << nVariables) - 1;
 		for (auto x : dnf)

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "VeitchDiagramTest.h"
+#include "test_veitch.h"
 
 namespace veitch_test
 {

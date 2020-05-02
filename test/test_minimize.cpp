@@ -1,4 +1,4 @@
-#include "McCluskeyTest.h"
+#include "test_minimize.h"
 #include <stdexcept>
 
 void test1()
@@ -122,9 +122,8 @@ void test12()
 
 void testExtrapolate1()
 {
-	SetNumberOfVariables(4);
 	Implicant i = {"D"};
-	std::cout << std::string(i);
+	std::cout << i.ToLiteral(4);
 	DNF dnf;
 	ExtrapolateMintermsAndAdd(4, i, dnf);
 }

@@ -54,8 +54,7 @@ namespace logic
 		 * @param nVariables - Number of variables.
 		 * @param dnf - Disjunctive normal form of the logical function.
 		 * @param[optional] dontCare - Minterms that represent don't care combinations.
-		 * @param[optional] shouldMinimize - Whether the DNF specified by <code>dnf</code> has been previously minimized
-		 * represented by this Veitch diagram. Default value is <code>false</code>.
+		 * @param[optional] shouldMinimize - Whether the DNF specified by <code>dnf</code> should be minimized.
 		 */
 		VeitchDiagram(unsigned int nVariables, DNF dnf, const DNF &dontCare = {}, bool shouldMinimize = false);
 
